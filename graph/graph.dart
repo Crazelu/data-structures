@@ -77,7 +77,7 @@ class Graph<T> {
       while (currentIndex != initialNode!.neighbors.length - 1) {
         if (currentNode == node) return true;
 
-        for (var iterableNode in currentNode?.neighbors ?? []) {
+        for (var iterableNode in currentNode!.neighbors) {
           if (iterableNode == node) return true;
         }
 
@@ -98,9 +98,8 @@ class Graph<T> {
     Node<T> node,
     Node<T> otherNode,
   ) {
-    if (contains(node)) {
-      return node.neighbors.contains(otherNode);
-    }
+    if (contains(node)) return node.neighbors.contains(otherNode);
+
     return false;
   }
 
@@ -145,9 +144,7 @@ class Graph<T> {
 
   ///Removes edge between [node] and [otherNode] if any exists.
   void deleteEdge(Node<T> node, Node<T> otherNode) {
-    if (contains(node)) {
-      node.removeNeighbor(otherNode);
-    }
+    if (contains(node)) node.removeNeighbor(otherNode);
   }
 
 //TODO: Recursively print all nestings of nodes and their edges
