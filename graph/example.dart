@@ -2,11 +2,12 @@ import 'graph.dart';
 import 'node.dart';
 
 void main() {
+  final node1111 = Node(12111);
   final otherNode = Node(
     333,
     nodeNeighbors: [
       Node(444),
-      Node(12111),
+      node1111,
     ],
   );
 
@@ -47,15 +48,15 @@ void main() {
   );
 
   print(graph);
-  print(graph.contains(otherNode));
+  print(graph.contains(node1111));
 
-  print(graph.isAdjacent(firstNode, otherNode));
+  // print(graph.isAdjacent(firstNode, otherNode));
 
-  graph.deleteNode(otherNode);
+  // graph.deleteNode(otherNode);
 
-  print(graph);
+  // print(graph);
 
-  graph.deleteEdge(graph.initialNode!, node2);
+  // graph.deleteEdge(graph.initialNode!, node2);
 
-  print(graph);
+  // print(graph);
 }

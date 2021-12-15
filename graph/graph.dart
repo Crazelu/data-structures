@@ -69,9 +69,9 @@ class Graph<T> {
 
   ///Returns `true` if [node] is contained in graph.
   ///Otherwise, returns false.
-  bool contains(Node<T> node) {
+  bool contains(Node<T> node, [Node<T>? head]) {
     if (initialNode != null) {
-      var currentNode = initialNode;
+      var currentNode = head ?? initialNode;
       int currentIndex = -1;
 
       while (currentIndex != initialNode!.neighbors.length - 1) {
@@ -79,11 +79,14 @@ class Graph<T> {
 
         for (var iterableNode in currentNode!.neighbors) {
           if (iterableNode == node) return true;
+          // if (contains(node, iterableNode)) return true;
         }
 
         currentIndex++;
         if ((initialNode!.neighbors.length) > 0)
           currentNode = initialNode!.neighbors[currentIndex];
+
+        // if (contains(node, currentNode)) return true;
       }
 
       return currentNode == node;
