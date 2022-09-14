@@ -1,102 +1,91 @@
 import 'exceptions.dart';
 
-class Node<T> {
-  Object data;
+class Node<T extends Object> {
+  T data;
   Node<T>? next;
 
   Node({required this.data, this.next});
 }
 
-class LinkedList<T> {
-  Node<T>? node;
+class LinkedList<T extends Object> {
+  ///Head node
+  Node<T>? _head;
 
-  LinkedList({this.node});
+  int _length = 0;
 
-  int get length {
-    int count = 0;
-    if (this.node != null) {
-      Node<T> current = this.node!;
-      while (current.next != null) {
-        count++;
-        current = current.next!;
-      }
-    }
-    return count;
-  }
+  ///Length of list (i.e number of elements it contains)
+  int get length => _length;
 
-  void checkType(Object data) {
-    if (!(data is T)) {
-      throw LinkedListTypeError(
-          "Type $T expected but ${data.runtimeType} received");
-    }
-  }
-
-  ///inserts new node at the end of list
-  void insertAtEnd(Object data) {
-    checkType(data);
-    Node<T> arg = Node<T>(data: data);
+  ///Inserts[data] at the end of list
+  void insertAtEnd(T data) {
+    Node<T> newNode = Node<T>(data: data);
     //if linkedlist is empty, insert this item at the beginning
-    if (this.node == null) {
-      this.node = arg;
+    if (_head == null) {
+      _head = newNode;
+      _length = 1;
     } else {
-      Node<T> lastNode = this.node!;
+      Node<T> lastNode = _head!;
       while (lastNode.next != null) {
         lastNode = lastNode.next!;
       }
-      lastNode.next = arg;
+      lastNode.next = newNode;
+      _length++;
     }
   }
 
-  ///inserts new node at the beginning of list
-  void insertAtBeginning(Object data) {
-    checkType(data);
-    Node<T> arg = Node<T>(data: data);
+  ///Inserts [data] at the beginning of list
+  void insertAtBeginning(T data) {
+    Node<T> newNode = Node<T>(data: data);
     //if linkedlist is empty, insert this item at the beginning
-    if (this.node == null) {
-      this.node = arg;
+    if (_head == null) {
+      _head = newNode;
+      _length = 1;
     } else {
-      Node<T> firstNode = this.node!;
-      this.node = arg;
-      this.node!.next = firstNode;
+      Node<T> firstNode = _head!;
+      _head = newNode;
+      _head!.next = firstNode;
+      _length++;
     }
   }
 
-  void insertAtPosition(int pos, Object data) {
-    checkType(data);
+  ///Inserts [data] at index [index].
+  ///This replaces the previous value at [index] (if any) with [data].
+  void insertAtPosition(int index, T data) {
     int length = this.length;
-    if (pos > length) {
-      throw LinkedListIndexError("Invalid index $pos. Range 0:${this.length}");
+    if (index > length) {
+      throw LinkedListIndexError(
+          "Invalid index $index. Range 0:${this.length}");
     }
 
-    Node<T> arg = Node<T>(data: data);
-    if (pos == 0) {
-      Node<T> current = this.node!;
+    Node<T> newNode = Node<T>(data: data);
+    if (index == 0) {
+      Node<T> current = _head!;
       if (current.next == null) {
-        this.node = arg;
+        _head = newNode;
       } else {
-        this.node = arg;
-        arg.next = current.next;
+        _head = newNode;
+        newNode.next = current.next;
       }
       return;
     }
 
-    if (pos == -1 || pos == length) {
-      Node<T> current = this.node!;
+    if (index == -1 || index == length) {
+      Node<T> current = _head!;
 
       while (current.next?.next != null) {
         current = current.next!;
       }
 
-      current.next = arg;
+      current.next = newNode;
       return;
     }
 
     int count = 0;
-    Node<T> current = this.node!;
-    Node<T> last = this.node!;
-    if (this.node != null) {
+    Node<T> current = _head!;
+    Node<T> last = _head!;
+    if (_head != null) {
       while (current.next != null) {
-        if (pos == count) break;
+        if (index == count) break;
         count++;
         last = current;
         current = current.next!;
@@ -105,45 +94,50 @@ class LinkedList<T> {
     last.next = Node<T>(data: data, next: current.next);
   }
 
-  ///removes first node whose object is same as `arg`
-  Object? pop(Object arg) {
-    if (this.node != null) {
-      Node<T> currentNode = this.node!;
-      Node<T> lastNode = this.node!;
+  ///Removes and returns `value` entry from list if it exists.
+  ///Does nothing and returns null if `value` is not contained in list.
+  T? pop(T value) {
+    if (_head != null) {
+      Node<T> currentNode = _head!;
+      Node<T> lastNode = _head!;
       while (currentNode.next != null) {
-        if (currentNode.data == arg) {
+        if (currentNode.data == value) {
           //if first node is the one with data to be popped,
           //set new root node to firtNode.next
-          if (currentNode == this.node) {
-            this.node = currentNode.next!;
+          if (currentNode == _head) {
+            _head = currentNode.next!;
           } else {
             lastNode.next = currentNode.next!;
           }
 
+          _length--;
           return currentNode.data;
         }
         lastNode = currentNode;
         currentNode = currentNode.next!;
       }
-      //if node with data `arg` to be popped has no next node
+      //if node with data `value` to be popped has no next node
 
-      if (currentNode.data == arg) {
+      if (currentNode.data == value) {
         //set first node to null if node to be popped is the only node in the list
         //otherwise set next property of the last node in the list to null
         if (currentNode.next == null) {
-          this.node = null;
+          _head = null;
         } else {
           lastNode.next = null;
         }
+        _length--;
         return currentNode.data;
       }
     }
+    return null;
   }
 
+  ///Reverses list
   LinkedList<T> reverse() {
-    if (this.node == null) return this;
-    Node<T>? following = this.node!;
-    Node<T>? current = this.node!;
+    if (_head == null) return this;
+    Node<T>? following = _head!;
+    Node<T>? current = _head!;
     Node<T>? previous;
 
     while (current != null) {
@@ -152,18 +146,22 @@ class LinkedList<T> {
       previous = current;
       current = following;
     }
-    this.node = previous;
+    _head = previous;
     return this;
+  }
+
+  operator []=(int index, T data) {
+    insertAtPosition(index, data);
   }
 
   @override
   String toString() {
-    if (this.node == null) {
+    if (_head == null) {
       return '[]';
     }
 
     String res = '';
-    Node nextNode = this.node!;
+    Node nextNode = _head!;
     while (nextNode.next != null) {
       res += '${nextNode.data}, ';
       nextNode = nextNode.next!;
@@ -174,29 +172,37 @@ class LinkedList<T> {
   }
 }
 
-void main() {
-  // LinkedList list = LinkedList();
-  // print(list);
-  // list.insertAtEnd(2);
-  // print(list.pop(2));
-  // print(list);
-  // list.insertAtEnd(4);
-  // print(list);
-  // list.insertAtBeginning("ME");
-  // print(list);
-  // list.insertAtEnd(4);
-  // print(list);
-  // list.insertAtPosition(0, 3);
-  // print(list.pop(3));
-  // print(list);
+// void main() {
+//   LinkedList list = LinkedList();
+//   print(list);
+//   list.insertAtEnd(2);
+//   print(list.pop(2));
+//   print(list);
+//   list.insertAtEnd(4);
+//   print(list);
+//   list.insertAtBeginning("ME");
+//   print(list);
+//   list.insertAtEnd(4);
+//   print(list);
+//   list.insertAtPosition(0, 3);
+//   print(list);
+//   print(list.pop(3));
+//   print(list);
 
-  // list.insertAtBeginning(43);
-  // list.insertAtBeginning(13);
-  // list.insertAtEnd(7);
+//   list.insertAtBeginning(43);
+//   list.insertAtBeginning(13);
+//   list.insertAtEnd(7);
 
-  // print(list);
+//   print(list);
+//   print(list.reverse());
+//   print("LENGTH: ${list.length}");
 
-  // print(list.reverse());
+//   final numbers = LinkedList<int>();
+//   numbers.insertAtBeginning(0);
+//   numbers.insertAtBeginning(1);
+//   print(numbers);
+//   numbers[0] = 9;
 
-  // print(list);
-}
+//   print(numbers);
+//   print("LENGTH: ${numbers.length}");
+// }
