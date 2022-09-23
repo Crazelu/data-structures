@@ -65,12 +65,11 @@ class Trie {
     List<String> result = [];
 
     _TrieNode node = _root;
-    _TrieNode oldNode = _root;
     int length = prefix.length;
     for (int i = 0; i < length; i++) {
       final char = prefix[i];
       if (node.children[char] == null) return [];
-      oldNode = node = node.children[char]!;
+      node = node.children[char]!;
     }
 
     for (var char in node.children.keys) {
@@ -79,7 +78,6 @@ class Trie {
       _TrieNode? currentNode = node.children[char];
       if (currentNode == null || currentNode.endOfWord) {
         result.add(prefix + char);
-        node = oldNode;
         result.addAll(
           autoComplete(
             prefix: prefix + char,

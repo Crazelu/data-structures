@@ -5,7 +5,7 @@ void main() {
 
   trie.insert("Luck");
   trie.insert("Lucky");
-  trie.insert("Luckylu");
+  trie.insert("Luckily");
   trie.insert("Lucas");
   trie.insert("Luchi");
   trie.insert("Lucachi");
@@ -14,8 +14,12 @@ void main() {
   trie.insert("Lucro");
   trie.insert("Lucroul");
   trie.insert("Lucaine");
+  trie.insert("Luke");
 
-  print(trie.doesWordExist("Lucaine"));
+  print(trie.doesWordExist("Lucaine")); //true
+  print(trie.doesPrefixExist("Luk")); //true
+  print(trie.doesPrefixExist("Li")); //false
 
-  print(trie.autoComplete(prefix: "Lu", limit: 5));
+  //prints all autocomplete suggestions for 'Lu'
+  print(trie.autoComplete(prefix: "Lu"));
 }
