@@ -1,10 +1,10 @@
 class _Node<T extends Object> {
-  T data;
+  T value;
   _Node<T>? next;
   _Node<T>? previous;
 
   _Node({
-    required this.data,
+    required this.value,
     this.next,
     this.previous,
   });
@@ -21,7 +21,7 @@ class Queue<T extends Object> {
 
   ///Inserts [value] at the end of queue
   void insert(T value) {
-    _Node<T> newNode = _Node<T>(data: value);
+    _Node<T> newNode = _Node<T>(value: value);
     if (_tail == null) {
       _head = _tail = newNode;
     } else {
@@ -44,7 +44,7 @@ class Queue<T extends Object> {
       _tail = null;
     }
     _length--;
-    return oldHead?.data;
+    return oldHead?.value;
   }
 
   @override
@@ -52,7 +52,7 @@ class Queue<T extends Object> {
     String result = "";
     _Node? currentNode = _tail;
     while (currentNode != null) {
-      result += "${currentNode.data}${currentNode.next != null ? ' -> ' : ''}";
+      result += "${currentNode.value}${currentNode.next != null ? ' -> ' : ''}";
       currentNode = currentNode.next;
     }
     return "[$result]";
