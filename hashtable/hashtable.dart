@@ -72,6 +72,30 @@ class HashTable<K extends Object, V extends Object> {
     _table = List<_Node<K, V>?>.generate(_maxSize, (index) => null);
   }
 
+  List<K> get keys {
+    List<K> result = [];
+    for (var column in _table) {
+      _Node<K, V>? node = column;
+      while (node != null) {
+        result.add(node.key);
+        node = node.next;
+      }
+    }
+    return result;
+  }
+
+  List<V> get values {
+    List<V> result = [];
+    for (var column in _table) {
+      _Node<K, V>? node = column;
+      while (node != null) {
+        result.add(node.value);
+        node = node.next;
+      }
+    }
+    return result;
+  }
+
   void operator []=(K key, V value) {
     insert(key, value);
   }

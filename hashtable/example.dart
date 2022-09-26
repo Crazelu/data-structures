@@ -25,6 +25,9 @@ void main() {
   print(hashTable);
   print(hashTable.get("Ghana"));
   print(hashTable[sophiaTheCat]);
+
+  print(hashTable.keys);
+  print(hashTable.values);
 }
 
 class Cat {
