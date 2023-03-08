@@ -1,18 +1,16 @@
-class _Node<T extends Object> {
+class _Node<T> {
   T value;
   _Node<T>? next;
   _Node<T>? previous;
-  int priority;
 
   _Node({
     required this.value,
-    required this.priority,
     this.next,
     this.previous,
   });
 }
 
-class PriorityQueue<T extends Object> {
+class PriorityQueue<T extends Comparable> {
   _Node<T>? _root;
 
   int _length = 0;
@@ -20,9 +18,20 @@ class PriorityQueue<T extends Object> {
   ///Number of elements contained in queue
   int get length => _length;
 
-  ///Inserts [value] into [PriorityQueue] based on [priority]
-  void insert(T value, int priority) {
-    _Node<T> newNode = _Node<T>(value: value, priority: priority);
+  ///Elements in this queue in order of their priority
+  List<T> get entries {
+    List<T> result = [];
+    _Node? currentNode = _root;
+    while (currentNode != null) {
+      result.add(currentNode.value);
+      currentNode = currentNode.previous;
+    }
+    return result;
+  }
+
+  ///Inserts [value] into queue
+  void insert(T value) {
+    _Node<T> newNode = _Node<T>(value: value);
 
     if (_root == null) {
       _root = newNode;
@@ -35,19 +44,22 @@ class PriorityQueue<T extends Object> {
     bool iterate = true;
 
     while (iterate) {
-      if (newNode.priority == currentNode?.priority) {
-        lastNode = currentNode;
-        currentNode = currentNode?.previous;
-        continue;
-      }
-
-      if (currentNode != null && newNode.priority < currentNode.priority) {
+      if (currentNode != null &&
+          newNode.value.compareTo(currentNode.value) == 0) {
         lastNode = currentNode;
         currentNode = currentNode.previous;
         continue;
       }
 
-      if (currentNode != null && newNode.priority > currentNode.priority) {
+      if (currentNode != null &&
+          newNode.value.compareTo(currentNode.value) == -1) {
+        lastNode = currentNode;
+        currentNode = currentNode.previous;
+        continue;
+      }
+
+      if (currentNode != null &&
+          newNode.value.compareTo(currentNode.value) == 1) {
         final temp = currentNode.next;
 
         if (temp == null) {
